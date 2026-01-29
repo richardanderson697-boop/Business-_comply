@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import styles from './styles.module.css'
 
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null)
@@ -93,42 +94,40 @@ export default function UploadPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-8">
-      <div className="w-full max-w-2xl space-y-8">
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">
-            Upload Compliance Document
-          </h1>
-          <p className="text-muted-foreground">
+    <div className={styles.container}>
+      <div className={styles.content}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Upload Compliance Document</h1>
+          <p className={styles.subtitle}>
             Upload documents for AI-powered compliance analysis
           </p>
         </div>
 
-        <div className="rounded-lg border bg-card p-8 space-y-6">
-          <div className="space-y-4">
-            <label className="block">
-              <span className="text-sm font-medium">Select Document</span>
+        <div className={styles.card}>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>
+              <span className={styles.labelText}>Select Document</span>
               <input
                 type="file"
                 onChange={handleFileChange}
                 accept=".pdf,.doc,.docx,.txt"
-                className="mt-2 block w-full text-sm file:mr-4 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-primary-foreground hover:file:bg-primary/90"
+                className={styles.fileInput}
                 disabled={uploading}
               />
             </label>
 
             {file && (
-              <div className="rounded-md bg-muted p-4">
-                <p className="text-sm font-medium">{file.name}</p>
-                <p className="text-xs text-muted-foreground mt-1">
+              <div className={styles.filePreview}>
+                <p className={styles.fileName}>{file.name}</p>
+                <p className={styles.fileSize}>
                   {(file.size / 1024 / 1024).toFixed(2)} MB
                 </p>
               </div>
             )}
 
             {error && (
-              <div className="rounded-md bg-destructive/10 border border-destructive/20 p-4">
-                <p className="text-sm text-destructive">{error}</p>
+              <div className={styles.error}>
+                <p className={styles.errorText}>{error}</p>
               </div>
             )}
           </div>
@@ -136,16 +135,16 @@ export default function UploadPage() {
           <button
             onClick={handleUpload}
             disabled={!file || uploading}
-            className="w-full rounded-md bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+            className={styles.uploadButton}
           >
             {uploading ? 'Uploading and Analyzing...' : 'Upload and Analyze'}
           </button>
         </div>
 
-        <div className="text-center">
+        <div className={styles.footer}>
           <button
             onClick={() => router.push('/dashboard')}
-            className="text-sm text-muted-foreground hover:text-foreground underline"
+            className={styles.backLink}
           >
             View Dashboard
           </button>
