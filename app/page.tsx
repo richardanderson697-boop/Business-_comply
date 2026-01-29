@@ -33,17 +33,20 @@ export default function Home() {
             </p>
           </Link>
           
-          <div className={styles.card}>
-            <h2 className={styles.cardTitle}>Data Scraper API</h2>
+          <Link href="/test-scraper" className={styles.card}>
+            <h2 className={styles.cardTitle}>Test Scraper API</h2>
             <p className={styles.textMuted}>
-              Accept and analyze data from external compliance scrapers via API.
+              Test your scraper API with sample data and view AI analysis results.
             </p>
-          </div>
+          </Link>
         </div>
 
         <div className={styles.flex}>
           <Link href="/upload" className={`${styles.button} ${styles.buttonPrimary}`}>
             Upload Document
+          </Link>
+          <Link href="/test-scraper" className={`${styles.button} ${styles.buttonPrimary}`}>
+            Test Scraper API
           </Link>
           <Link href="/dashboard" className={`${styles.button} ${styles.buttonSecondary}`}>
             View Dashboard
