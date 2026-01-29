@@ -1,48 +1,47 @@
-import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import styles from './styles.module.css'
 
-interface ComplianceIssue {
-  id: string
-  issue_type: string
-  severity: string
-  description: string
-  location: string
-  recommendation: string
-}
-
-async function getDocumentsWithAnalysis() {
-  const supabase = await createClient()
-  
-  const { data: documents, error } = await supabase
-    .from('documents')
-    .select(`
-      *,
-      analysis_results (
-        id,
-        compliance_score,
-        issues_found,
-        summary,
-        created_at
-      ),
-      compliance_issues (
-        id,
-        issue_type,
-        severity,
-        description,
-        location,
-        recommendation
-      )
-    `)
-    .order('uploaded_at', { ascending: false })
-
-  if (error) {
-    console.error('[v0] Error fetching documents:', error)
-    return []
+// Mock data for demonstration
+const mockDocuments = [
+  {
+    id: '1',
+    title: 'Sample Compliance Document.pdf',
+    uploaded_at: new Date().toISOString(),
+    status: 'completed',
+    analysis_results: [{
+      compliance_score: 87,
+      issues_found: 3,
+      summary: 'Document shows generally good compliance with minor issues identified in data handling procedures and consent documentation.',
+      created_at: new Date().toISOString()
+    }],
+    compliance_issues: [
+      {
+        id: '1',
+        issue_type: 'Data Protection',
+        severity: 'high',
+        description: 'Missing explicit consent for data processing activities in Section 3.2',
+        location: 'Page 5, Section 3.2',
+        recommendation: 'Add explicit consent clauses and update privacy policy to align with GDPR Article 6(1)(a)'
+      },
+      {
+        id: '2',
+        issue_type: 'Documentation',
+        severity: 'medium',
+        description: 'Incomplete audit trail documentation for access controls',
+        location: 'Page 12, Section 7.1',
+        recommendation: 'Implement comprehensive logging system and maintain records for minimum 3 years'
+      },
+      {
+        id: '3',
+        issue_type: 'Security',
+        severity: 'low',
+        description: 'Password policy does not specify expiration requirements',
+        location: 'Page 8, Section 5.3',
+        recommendation: 'Define password expiration policy (recommended: 90 days) and enforce regular updates'
+      }
+    ]
   }
-
-  return documents || []
-}
+]
 
 function getStatusClass(status: string) {
   switch (status) {
@@ -72,8 +71,8 @@ function getSeverityClass(severity: string) {
   }
 }
 
-export default async function DashboardPage() {
-  const documents = await getDocumentsWithAnalysis()
+export default function DashboardPage() {
+  const documents = mockDocuments
 
   return (
     <div className={styles.container}>
@@ -151,7 +150,7 @@ export default async function DashboardPage() {
                     {issues.length > 0 && (
                       <div className={styles.issuesSection}>
                         <h3 className={styles.issuesTitle}>Compliance Issues Detected</h3>
-                        {issues.map((issue: ComplianceIssue) => (
+                        {issues.map((issue: any) => (
                           <div key={issue.id} className={styles.issueCard}>
                             <div className={styles.issueHeader}>
                               <div style={{ flex: 1 }}>

@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import styles from './styles.module.css'
 
@@ -9,6 +8,7 @@ export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
   const router = useRouter()
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,63 +28,30 @@ export default function UploadPage() {
     setError(null)
 
     try {
-      const supabase = createClient()
-      
-      // Upload file to Supabase Storage
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
-      const filePath = `documents/${fileName}`
+      // Create form data for file upload
+      const formData = new FormData()
+      formData.append('file', file)
 
-      const { error: uploadError } = await supabase.storage
-        .from('compliance-documents')
-        .upload(filePath, file)
-
-      if (uploadError) {
-        throw uploadError
-      }
-
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('compliance-documents')
-        .getPublicUrl(filePath)
-
-      // Create document record
-      const { data: doc, error: insertError } = await supabase
-        .from('documents')
-        .insert({
-          title: file.name,
-          file_url: publicUrl,
-          file_path: filePath,
-          file_type: file.type,
-          file_size: file.size,
-          status: 'pending'
-        })
-        .select()
-        .single()
-
-      if (insertError) {
-        throw insertError
-      }
-
-      // Call backend API to analyze document
+      // Call API to upload and analyze
       const response = await fetch('/api/analyze-document', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          documentId: doc.id,
-          fileUrl: publicUrl,
-          fileName: file.name
-        }),
+        body: formData,
       })
 
       if (!response.ok) {
-        throw new Error('Failed to start analysis')
+        const data = await response.json()
+        throw new Error(data.error || 'Failed to upload document')
       }
 
-      // Redirect to dashboard
-      router.push('/dashboard')
+      const result = await response.json()
+      console.log('[v0] Upload successful:', result)
+      
+      setSuccess(true)
+      
+      // Redirect to dashboard after a short delay
+      setTimeout(() => {
+        router.push('/dashboard')
+      }, 1500)
     } catch (err: any) {
       console.error('[v0] Upload error:', err)
       setError(err.message || 'Failed to upload document')
@@ -128,6 +95,12 @@ export default function UploadPage() {
             {error && (
               <div className={styles.error}>
                 <p className={styles.errorText}>{error}</p>
+              </div>
+            )}
+
+            {success && (
+              <div className={styles.success}>
+                <p className={styles.successText}>Document uploaded successfully! Redirecting to dashboard...</p>
               </div>
             )}
           </div>
