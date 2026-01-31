@@ -25,18 +25,6 @@
   "include": ["next-env.d.ts", "app/**/*.ts", "app/**/*.tsx", ".next/types/**/*.ts", "use-mobile.ts", "use-toast.ts", "utils.ts"],
   "exclude": [
     "node_modules",
-    "*.service.ts",
-    "*.controller.ts",
-    "*.guard.ts",
-    "*.gateway.ts",
-    "*.worker.ts",
-    "*.entity.ts",
-    "*.dto.ts",
-    "main.ts",
-    "main.setup.ts",
-    "api-client.ts",
-    "api.interceptor.ts",
-    "mock-api.ts",
-    "websocket.ts"
+    "backend"
   ]
 }
