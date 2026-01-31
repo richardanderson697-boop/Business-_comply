@@ -13,12 +13,12 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Business Comply',
-  description: 'Business compliance management platform',
+  title: 'Business Comply - AI-Powered Compliance Management',
+  description: 'Intelligent compliance platform that ingests regulatory feeds and analyzes business documents using semantic RAG to detect non-compliance and generate detailed reports with citations.',
 }
 
 export const viewport: Viewport = {
-  themeColor: '#7c3aed',
+  themeColor: '#0f172a',
 }
 
 export default function RootLayout({
@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
       >

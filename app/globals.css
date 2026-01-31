@@ -5,31 +5,45 @@
 }
 
 :root {
-  --background: #1a1f2e;
-  --foreground: #fafafa;
-  --card: #242938;
-  --card-foreground: #fafafa;
-  --primary: #8b5cf6;
-  --primary-foreground: #fafafa;
-  --secondary: #3d4354;
-  --muted: #383d4e;
-  --muted-foreground: #a5a5b0;
-  --accent: #00d4d4;
-  --destructive: #ef4444;
-  --border: #3d4354;
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 217 33% 17%;
+  --card-foreground: 210 40% 98%;
+  --popover: 217 33% 17%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 222 47% 11%;
+  --secondary: 217 33% 17%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217 33% 17%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217 33% 17%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217 33% 17%;
+  --input: 217 33% 17%;
+  --ring: 217 91% 60%;
+  --chart-1: 220 70% 50%;
+  --chart-2: 160 60% 45%;
+  --chart-3: 30 80% 55%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 340 75% 55%;
   --radius: 0.5rem;
 }
 
-html, body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: var(--background);
-  color: var(--foreground);
-  min-height: 100vh;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
