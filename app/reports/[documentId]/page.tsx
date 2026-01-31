@@ -1,5 +1,7 @@
+'use client'
+
 import Link from 'next/link'
-import { ShieldCheck, ArrowLeft, FileText, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react'
+import { ShieldCheck, ArrowLeft, FileText, AlertTriangle, CheckCircle2, Download } from 'lucide-react'
 
 // This would fetch from API in production
 const mockDocument = {
@@ -7,12 +9,14 @@ const mockDocument = {
   title: 'Q4 2025 Compliance Audit Report.pdf',
   uploaded_at: new Date().toISOString(),
   status: 'completed',
+  version: 2,
   analysis_results: [{
     id: 'ar1',
     compliance_score: 87,
     issues_found: 3,
     summary: 'Document shows generally good compliance with minor issues identified in data handling procedures and consent documentation. The analysis cross-referenced 247 regulatory requirements across GDPR, CCPA, and industry-specific standards.',
     created_at: new Date().toISOString(),
+    version: 1,
     regulations_checked: ['GDPR', 'CCPA', 'ISO 27001', 'SOC 2', 'HIPAA'],
     total_sections_analyzed: 12,
     compliant_sections: 9,
@@ -60,29 +64,68 @@ export default function ReportPage({ params }: { params: { documentId: string } 
   const mediumIssues = issues.filter(i => i.severity === 'medium').length
   const lowIssues = issues.filter(i => i.severity === 'low').length
 
+  const handleExportPDF = () => {
+    window.print()
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="border-b border-border bg-card sticky top-0 z-10">
+      <nav className="border-b border-border bg-card sticky top-0 z-10 no-print">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
               <ShieldCheck className="w-6 h-6 text-primary" />
               <span className="font-semibold text-lg">Business Comply</span>
             </Link>
-            <Link 
-              href="/dashboard"
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Dashboard
-            </Link>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={handleExportPDF}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
+              >
+                <Download className="w-4 h-4" />
+                Export PDF
+              </button>
+              <Link 
+                href="/dashboard"
+                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Dashboard
+              </Link>
+            </div>
           </div>
         </div>
       </nav>
 
       {/* Report Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Version & Audit Information */}
+        <div className="bg-muted/30 border border-border rounded-lg p-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
+            <div>
+              <p className="text-muted-foreground mb-1">Report ID</p>
+              <p className="font-mono font-semibold">{params.documentId.substring(0, 8).toUpperCase()}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground mb-1">Document Version</p>
+              <p className="font-semibold">v{document.version}.0</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground mb-1">Analysis Version</p>
+              <p className="font-semibold">v{analysis.version}.0</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground mb-1">Generated Date</p>
+              <p className="font-semibold">{new Date().toLocaleDateString()}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground mb-1">Status</p>
+              <p className="font-semibold text-green-500">Certified</p>
+            </div>
+          </div>
+        </div>
+
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-start gap-4 mb-4">
